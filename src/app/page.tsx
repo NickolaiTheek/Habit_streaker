@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Flame, 
@@ -19,8 +18,16 @@ import HeatmapCalendar from "@/components/HeatmapCalendar";
 import RewardAnimation from "@/components/RewardAnimation";
 import { useHabitStore } from "@/store/habitStore";
 
-// Dynamically import Scene3D with no SSR
-const Scene3D = dynamic(() => import("@/components/Scene3D"), { ssr: false });
+function BackgroundGradient() {
+  return (
+    <div className="absolute inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
+      <div className="absolute top-0 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+      <div className="absolute -bottom-8 left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+    </div>
+  );
+}
 
 export default function Home() {
   const { habits, stats, loadData } = useHabitStore();
@@ -39,10 +46,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* 3D Background Scene */}
-      <div className="fixed inset-0 -z-10">
-        <Scene3D />
-      </div>
+      {/* Gradient Background */}
+      <BackgroundGradient />
 
       {/* Reward Animations */}
       <AnimatePresence>

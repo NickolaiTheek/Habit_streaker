@@ -104,6 +104,17 @@ const getTodayString = () => {
 };
 
 const calculateStats = (habits: Habit[]): Stats => {
+  if (!habits.length) {
+    return {
+      level: 1,
+      totalPoints: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      completedToday: 0,
+      achievements: 0,
+    };
+  }
+
   const completedToday = habits.filter((h) => h.isCompletedToday).length;
   const totalPoints = habits.reduce((sum, h) => sum + h.streak * 10, 0);
   const level = Math.floor(totalPoints / 100) + 1;
@@ -143,12 +154,14 @@ export const useHabitStore = create<HabitStore>()(
 
       loadData: () => {
         const { habits } = get();
+        const baseHabits = habits.length === 0 ? defaultHabits : habits;
+
         if (habits.length === 0) {
-          set({ habits: defaultHabits });
+          set({ habits: baseHabits });
         }
 
         const today = getTodayString();
-        const updatedHabits = habits.map((habit) => {
+        const updatedHabits = baseHabits.map((habit) => {
           const isCompletedToday = habit.completedDates.includes(today);
           
           // Check if streak should continue

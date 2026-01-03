@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Flame, 
-  Trophy, 
-  Target, 
-  Calendar,
-  TrendingUp,
-  Award,
-  Zap,
-  Star
-} from "lucide-react";
 import HabitCard from "@/components/HabitCard";
-import StatsCard from "@/components/StatsCard";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
 import RewardAnimation from "@/components/RewardAnimation";
+import StatsCard from "@/components/StatsCard";
 import { useHabitStore } from "@/store/habitStore";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+    Award,
+    Calendar,
+    Flame,
+    Star,
+    Target,
+    TrendingUp,
+    Trophy,
+    Zap
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 function BackgroundGradient() {
   return (

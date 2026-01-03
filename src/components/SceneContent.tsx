@@ -1,7 +1,7 @@
 "use client";
 
+import { Float, MeshDistortMaterial, OrbitControls, Sphere } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Float, Sphere, MeshDistortMaterial } from "@react-three/drei";
 import { Suspense } from "react";
 
 function FloatingOrb({ position, color, scale }: { position: [number, number, number]; color: string; scale: number }) {

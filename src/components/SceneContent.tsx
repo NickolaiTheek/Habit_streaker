@@ -1,11 +1,52 @@
 "use client";
 
-import { Float, MeshDistortMaterial, OrbitControls, Sphere } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-function FloatingOrb({ position, color, scale }: { position: [number, number, number]; color: string; scale: number }) {
-  return (
+type DreiModules = {
+  Float: typeof import("@react-three/drei").Float;
+  Sphere: typeof import("@react-three/drei").Sphere;
+  MeshDistortMaterial: typeof import("@react-three/drei").MeshDistortMaterial;
+  OrbitControls: typeof import("@react-three/drei").OrbitControls;
+};
+
+type FiberModules = {
+  Canvas: typeof import("@react-three/fiber").Canvas;
+};
+
+export default function SceneContent() {
+  const [drei, setDrei] = useState<DreiModules | null>(null);
+  const [fiber, setFiber] = useState<FiberModules | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    // Dynamically import to avoid module evaluation on the server/Turbopack
+    Promise.all([
+      import("@react-three/drei"),
+      import("@react-three/fiber"),
+    ]).then(([dreiMod, fiberMod]) => {
+      if (!mounted) return;
+      setDrei({
+        Float: dreiMod.Float,
+        Sphere: dreiMod.Sphere,
+        MeshDistortMaterial: dreiMod.MeshDistortMaterial,
+        OrbitControls: dreiMod.OrbitControls,
+      });
+      setFiber({ Canvas: fiberMod.Canvas });
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!drei || !fiber) {
+    return null;
+  }
+
+  const { Float, Sphere, MeshDistortMaterial, OrbitControls } = drei;
+  const { Canvas } = fiber;
+
+  const FloatingOrb = ({ position, color, scale }: { position: [number, number, number]; color: string; scale: number }) => (
     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
       <Sphere args={[scale, 32, 32]} position={position}>
         <MeshDistortMaterial
@@ -19,9 +60,7 @@ function FloatingOrb({ position, color, scale }: { position: [number, number, nu
       </Sphere>
     </Float>
   );
-}
 
-export default function SceneContent() {
   return (
     <Canvas camera={{ position: [0, 0, 8], fov: 50 }} style={{ background: "transparent" }}>
       <Suspense fallback={null}>

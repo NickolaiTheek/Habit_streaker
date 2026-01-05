@@ -2,6 +2,7 @@
 
 import HabitCard from "@/components/HabitCard";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
+import InteractiveScene from "@/components/InteractiveScene";
 import RewardAnimation from "@/components/RewardAnimation";
 import StatsCard from "@/components/StatsCard";
 import { useHabitStore } from "@/store/habitStore";
@@ -46,6 +47,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* Interactive 3D Scene */}
+      <InteractiveScene />
+
       {/* Gradient Background */}
       <BackgroundGradient />
 

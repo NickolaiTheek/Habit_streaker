@@ -103,6 +103,41 @@ const getTodayString = () => {
   return new Date().toISOString().split("T")[0];
 };
 
+const getYesterdayString = () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return yesterday.toISOString().split("T")[0];
+};
+
+// Calculate current streak based on consecutive completed dates
+const calculateStreakFromDates = (completedDates: string[]): number => {
+  if (completedDates.length === 0) return 0;
+
+  const today = getTodayString();
+  const yesterday = getYesterdayString();
+  
+  // Sort dates in descending order (most recent first)
+  const sortedDates = [...completedDates].sort().reverse();
+
+  let streak = 0;
+  let currentDate = new Date(today);
+
+  // Check backwards from today
+  for (let i = 0; i < 365; i++) {
+    const dateString = currentDate.toISOString().split("T")[0];
+    
+    if (sortedDates.includes(dateString)) {
+      streak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      // Streak broken, stop counting
+      break;
+    }
+  }
+
+  return streak;
+};
+
 const calculateStats = (habits: Habit[]): Stats => {
   if (!habits.length) {
     return {
@@ -164,18 +199,8 @@ export const useHabitStore = create<HabitStore>()(
         const updatedHabits = baseHabits.map((habit) => {
           const isCompletedToday = habit.completedDates.includes(today);
           
-          // Check if streak should continue
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const yesterdayString = yesterday.toISOString().split("T")[0];
-          
-          let currentStreak = habit.streak;
-          if (!isCompletedToday && habit.lastCompleted !== today) {
-            // If not completed today and last completion wasn't yesterday, reset streak
-            if (habit.lastCompleted !== yesterdayString) {
-              currentStreak = 0;
-            }
-          }
+          // Recalculate streak from completed dates
+          const currentStreak = calculateStreakFromDates(habit.completedDates);
 
           return {
             ...habit,
@@ -198,18 +223,22 @@ export const useHabitStore = create<HabitStore>()(
             const isCompletedToday = habit.completedDates.includes(today);
             
             let newCompletedDates = [...habit.completedDates];
-            let newStreak = habit.streak;
             let newBestStreak = habit.bestStreak;
 
             if (isCompletedToday) {
-              // Uncomplete
+              // Uncomplete: remove today from completed dates
               newCompletedDates = newCompletedDates.filter((date) => date !== today);
-              newStreak = Math.max(0, newStreak - 1);
             } else {
-              // Complete
+              // Complete: add today to completed dates
               newCompletedDates.push(today);
-              newStreak = habit.streak + 1;
-              newBestStreak = Math.max(newBestStreak, newStreak);
+            }
+
+            // Recalculate streak from the updated completed dates
+            const newStreak = calculateStreakFromDates(newCompletedDates);
+            
+            // Update best streak if current streak is higher
+            if (newStreak > newBestStreak) {
+              newBestStreak = newStreak;
             }
 
             return {
@@ -217,7 +246,9 @@ export const useHabitStore = create<HabitStore>()(
               completedDates: newCompletedDates,
               streak: newStreak,
               bestStreak: newBestStreak,
-              lastCompleted: isCompletedToday ? habit.lastCompleted : today,
+              lastCompleted: newCompletedDates.length > 0 
+                ? newCompletedDates[newCompletedDates.length - 1] 
+                : null,
               isCompletedToday: !isCompletedToday,
             };
           });

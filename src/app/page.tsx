@@ -182,6 +182,7 @@ export default function Home() {
 
           {/* Advanced Charts */}
           <AdvancedCharts />
+        </main>
       </div>
     </div>
   );

@@ -295,18 +295,17 @@ export const useHabitStore = create<HabitStore>()(
         const today = new Date();
         const currentMonth = today.getMonth();
         const currentYear = today.getFullYear();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-        const weeks: { [key: number]: { completed: number; possible: number } } = {
-          1: { completed: 0, possible: 0 },
-          2: { completed: 0, possible: 0 },
-          3: { completed: 0, possible: 0 },
-          4: { completed: 0, possible: 0 },
-        };
+        // Initialize weeks based on actual days in month
+        const weeks: { [key: number]: { completed: number; possible: number } } = {};
+        const maxWeeks = Math.ceil(daysInMonth / 7);
+        for (let i = 1; i <= maxWeeks; i++) {
+          weeks[i] = { completed: 0, possible: 0 };
+        }
 
         // Count completions by week
         habits.forEach((habit) => {
-          // Count all days in the month for "possible"
-          const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
           for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(currentYear, currentMonth, day);
             const weekNum = Math.ceil(day / 7);

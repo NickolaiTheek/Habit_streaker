@@ -28,6 +28,9 @@ interface HabitStore {
   initializeHabits: () => void;
   toggleHabit: (id: string) => void;
   loadData: () => void;
+  getWeeklyStats: () => Array<{ day: string; completed: number }>;
+  getMonthlyStats: () => Array<{ week: string; completed: number; possible: number }>;
+  getCompletionRate: () => Array<{ habitName: string; rate: number; completed: number; total: number }>;
 }
 
 const defaultHabits: Habit[] = [
@@ -255,6 +258,93 @@ export const useHabitStore = create<HabitStore>()(
 
           const stats = calculateStats(updatedHabits);
           return { habits: updatedHabits, stats };
+        });
+      },
+
+      getWeeklyStats: () => {
+        const { habits } = get();
+        const today = new Date();
+        const weekData: { [key: string]: number } = {};
+
+        // Initialize last 7 days
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          const dateStr = date.toISOString().split("T")[0];
+          const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+          weekData[dateStr] = 0;
+        }
+
+        // Count completions for each day
+        habits.forEach((habit) => {
+          habit.completedDates.forEach((dateStr) => {
+            if (weekData.hasOwnProperty(dateStr)) {
+              weekData[dateStr]++;
+            }
+          });
+        });
+
+        return Object.entries(weekData).map(([date, completed]) => {
+          const dayName = new Date(date).toLocaleDateString("en-US", { weekday: "short" });
+          return { day: dayName, completed };
+        });
+      },
+
+      getMonthlyStats: () => {
+        const { habits } = get();
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        const weeks: { [key: number]: { completed: number; possible: number } } = {
+          1: { completed: 0, possible: 0 },
+          2: { completed: 0, possible: 0 },
+          3: { completed: 0, possible: 0 },
+          4: { completed: 0, possible: 0 },
+        };
+
+        // Count completions by week
+        habits.forEach((habit) => {
+          // Count all days in the month for "possible"
+          const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+          for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentYear, currentMonth, day);
+            const weekNum = Math.ceil(day / 7);
+            weeks[weekNum].possible++;
+
+            const dateStr = date.toISOString().split("T")[0];
+            if (habit.completedDates.includes(dateStr)) {
+              weeks[weekNum].completed++;
+            }
+          }
+        });
+
+        return Object.entries(weeks).map(([weekNum, data]) => ({
+          week: `Week ${weekNum}`,
+          completed: Math.round(data.completed / habits.length || 0),
+          possible: Math.round(data.possible / habits.length || 0),
+        }));
+      },
+
+      getCompletionRate: () => {
+        const { habits } = get();
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        return habits.map((habit) => {
+          const completedInRange = habit.completedDates.filter((dateStr) => {
+            const date = new Date(dateStr);
+            return date >= thirtyDaysAgo && date <= today;
+          }).length;
+
+          const rate = Math.round((completedInRange / 30) * 100);
+          return {
+            habitName: habit.name,
+            rate,
+            completed: completedInRange,
+            total: 30,
+          };
         });
       },
     }),

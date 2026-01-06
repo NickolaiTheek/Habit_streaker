@@ -5,6 +5,7 @@ import HeatmapCalendar from "@/components/HeatmapCalendar";
 import InteractiveScene from "@/components/InteractiveScene";
 import RewardAnimation from "@/components/RewardAnimation";
 import StatsCard from "@/components/StatsCard";
+import AdvancedCharts from "@/components/AdvancedCharts";
 import { useHabitStore } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -178,7 +179,9 @@ export default function Home() {
             </h2>
             <HeatmapCalendar />
           </motion.section>
-        </main>
+
+          {/* Advanced Charts */}
+          <AdvancedCharts />
       </div>
     </div>
   );

@@ -3,18 +3,27 @@
 import { useHabitStore } from "@/store/habitStore";
 import { motion } from "framer-motion";
 import { Calendar, TrendingUp } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function AdvancedCharts() {
   const { getWeeklyStats, getMonthlyStats, getCompletionRate } = useHabitStore();
   const [view, setView] = useState<"weekly" | "monthly">("weekly");
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const weeklyData = getWeeklyStats();
   const monthlyData = getMonthlyStats();
   const completionRate = getCompletionRate();
 
   const chartData = view === "weekly" ? weeklyData : monthlyData;
+
+  if (!isHydrated) {
+    return null;
+  }
 
   return (
     <motion.section

@@ -2,9 +2,9 @@
 
 import { useHabitStore } from "@/store/habitStore";
 import { motion } from "framer-motion";
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from "recharts";
-import { useState } from "react";
 import { Calendar, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function AdvancedCharts() {
   const { getWeeklyStats, getMonthlyStats, getCompletionRate } = useHabitStore();

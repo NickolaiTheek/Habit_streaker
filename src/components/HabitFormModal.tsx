@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { Habit, useHabitStore } from "@/store/habitStore";
+import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useHabitStore, Habit } from "@/store/habitStore";
+import { useEffect, useState } from "react";
 
 interface HabitFormModalProps {
   isOpen: boolean;

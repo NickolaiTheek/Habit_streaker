@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Flame, CheckCircle2, Edit2, Trash2 } from "lucide-react";
-import { useHabitStore, type Habit } from "@/store/habitStore";
 import { cn } from "@/lib/utils";
+import { useHabitStore, type Habit } from "@/store/habitStore";
+import { motion } from "framer-motion";
+import { CheckCircle2, Edit2, Flame, Trash2 } from "lucide-react";
 
 interface HabitCardProps {
   habit: Habit;

@@ -220,12 +220,6 @@ const getTodayString = () => {
   return new Date().toISOString().split("T")[0];
 };
 
-const getYesterdayString = () => {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return yesterday.toISOString().split("T")[0];
-};
-
 // Calculate current streak based on consecutive completed dates
 const calculateStreakFromDates = (completedDates: string[]): number => {
   if (completedDates.length === 0) return 0;
@@ -391,9 +385,6 @@ export const useHabitStore = create<HabitStore>()(
           const dateStr = date.toISOString().split("T")[0];
           weekData[dateStr] = 0;
         }
-
-        // Helper to get day name
-        const getDayName = (date: Date) => date.toLocaleDateString("en-US", { weekday: "short" });
 
         // Count completions for each day
         habits.forEach((habit) => {

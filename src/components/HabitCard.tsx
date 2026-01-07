@@ -1,22 +1,35 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Flame, CheckCircle2 } from "lucide-react";
+import { Flame, CheckCircle2, Edit2, Trash2 } from "lucide-react";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { cn } from "@/lib/utils";
 
 interface HabitCardProps {
   habit: Habit;
   onComplete: (id: string) => void;
+  onEdit: (habit: Habit) => void;
   index: number;
 }
 
-export default function HabitCard({ habit, onComplete, index }: HabitCardProps) {
-  const { toggleHabit } = useHabitStore();
+export default function HabitCard({ habit, onComplete, onEdit, index }: HabitCardProps) {
+  const { toggleHabit, deleteHabit } = useHabitStore();
 
   const handleClick = () => {
     toggleHabit(habit.id);
     onComplete(habit.id);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm(`Delete "${habit.name}"? This cannot be undone.`)) {
+      deleteHabit(habit.id);
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit(habit);
   };
 
   return (
@@ -50,15 +63,35 @@ export default function HabitCard({ habit, onComplete, index }: HabitCardProps) 
             </p>
           </div>
         </div>
-        {habit.isCompletedToday && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 15 }}
+        <div className="flex items-center gap-2">
+          {habit.isCompletedToday && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 15 }}
+            >
+              <CheckCircle2 className="w-8 h-8 text-green-500" />
+            </motion.div>
+          )}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleEdit}
+            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+            title="Edit habit"
           >
-            <CheckCircle2 className="w-8 h-8 text-green-500" />
-          </motion.div>
-        )}
+            <Edit2 className="w-4 h-4 text-blue-400" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleDelete}
+            className="p-2 hover:bg-red-500/20 rounded-lg transition-colors"
+            title="Delete habit"
+          >
+            <Trash2 className="w-4 h-4 text-red-400" />
+          </motion.button>
+        </div>
       </div>
 
       {/* Streak Info */}

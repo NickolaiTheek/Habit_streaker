@@ -2,16 +2,18 @@
 
 import AdvancedCharts from "@/components/AdvancedCharts";
 import HabitCard from "@/components/HabitCard";
+import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
 import InteractiveScene from "@/components/InteractiveScene";
 import RewardAnimation from "@/components/RewardAnimation";
 import StatsCard from "@/components/StatsCard";
-import { useHabitStore } from "@/store/habitStore";
+import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
     Award,
     Calendar,
     Flame,
+    Plus,
     Star,
     Target,
     TrendingUp,
@@ -35,6 +37,8 @@ export default function Home() {
   const { habits, stats, loadData } = useHabitStore();
   const [showReward, setShowReward] = useState(false);
   const [rewardType, setRewardType] = useState<"confetti" | "trophy" | "star">("confetti");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | undefined>();
 
   useEffect(() => {
     loadData();
@@ -44,6 +48,21 @@ export default function Home() {
     setShowReward(true);
     setRewardType("confetti");
     setTimeout(() => setShowReward(false), 3000);
+  };
+
+  const handleAddHabit = () => {
+    setEditingHabit(undefined);
+    setModalOpen(true);
+  };
+
+  const handleEditHabit = (habit: Habit) => {
+    setEditingHabit(habit);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditingHabit(undefined);
   };
 
   return (
@@ -150,16 +169,28 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="mb-8"
           >
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Zap className="w-6 h-6 text-yellow-500" />
-              Today&apos;s Habits
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Zap className="w-6 h-6 text-yellow-500" />
+                Today&apos;s Habits
+              </h2>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAddHabit}
+                className="glass-strong hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-all"
+              >
+                <Plus className="w-5 h-5" />
+                Add Habit
+              </motion.button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {habits.map((habit, index) => (
                 <HabitCard
                   key={habit.id}
                   habit={habit}
                   onComplete={handleHabitComplete}
+                  onEdit={handleEditHabit}
                   index={index}
                 />
               ))}
@@ -184,6 +215,13 @@ export default function Home() {
           <AdvancedCharts />
         </main>
       </div>
+
+      {/* Habit Form Modal */}
+      <HabitFormModal
+        isOpen={modalOpen}
+        onClose={handleCloseModal}
+        habit={editingHabit}
+      />
     </div>
   );
 }

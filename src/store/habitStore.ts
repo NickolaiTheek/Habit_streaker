@@ -31,6 +31,9 @@ interface HabitStore {
   getWeeklyStats: () => Array<{ day: string; completed: number }>;
   getMonthlyStats: () => Array<{ week: string; completed: number; possible: number }>;
   getCompletionRate: () => Array<{ habitName: string; rate: number; completed: number; total: number }>;
+  addHabit: (name: string, icon: string, color: string) => void;
+  updateHabit: (id: string, name: string, icon: string, color: string) => void;
+  deleteHabit: (id: string) => void;
 }
 
 const defaultHabits: Habit[] = [
@@ -345,6 +348,45 @@ export const useHabitStore = create<HabitStore>()(
             completed: completedInRange,
             total: 30,
           };
+        });
+      },
+
+      addHabit: (name: string, icon: string, color: string) => {
+        const id = Date.now().toString();
+        const newHabit: Habit = {
+          id,
+          name,
+          icon,
+          color,
+          streak: 0,
+          bestStreak: 0,
+          completedDates: [],
+          lastCompleted: null,
+          isCompletedToday: false,
+        };
+
+        set((state) => {
+          const updatedHabits = [...state.habits, newHabit];
+          const stats = calculateStats(updatedHabits);
+          return { habits: updatedHabits, stats };
+        });
+      },
+
+      updateHabit: (id: string, name: string, icon: string, color: string) => {
+        set((state) => {
+          const updatedHabits = state.habits.map((habit) =>
+            habit.id === id ? { ...habit, name, icon, color } : habit
+          );
+          const stats = calculateStats(updatedHabits);
+          return { habits: updatedHabits, stats };
+        });
+      },
+
+      deleteHabit: (id: string) => {
+        set((state) => {
+          const updatedHabits = state.habits.filter((habit) => habit.id !== id);
+          const stats = calculateStats(updatedHabits);
+          return { habits: updatedHabits, stats };
         });
       },
     }),

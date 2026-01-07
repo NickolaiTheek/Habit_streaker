@@ -107,7 +107,7 @@ export default function InteractiveScene() {
         animationId = requestAnimationFrame(animate);
 
         // Update meshes based on mouse position
-        meshesRef.current.forEach((mesh, index) => {
+        meshesRef.current.forEach((mesh) => {
           // Rotate meshes
           mesh.rotation.x += mesh.userData.velocity.x;
           mesh.rotation.y += mesh.userData.velocity.y;
@@ -158,14 +158,16 @@ export default function InteractiveScene() {
       window.addEventListener("resize", onWindowResize);
 
       // Cleanup
+      const container = containerRef.current;
+      const currentRenderer = renderer;
       return () => {
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("resize", onWindowResize);
         cancelAnimationFrame(animationId);
-        if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
-          containerRef.current.removeChild(renderer.domElement);
+        if (container && currentRenderer.domElement.parentNode === container) {
+          container.removeChild(currentRenderer.domElement);
         }
-        renderer.dispose();
+        currentRenderer.dispose();
         meshesRef.current.forEach((mesh) => {
           (mesh.geometry as THREE.BufferGeometry).dispose();
           (mesh.material as THREE.Material).dispose();

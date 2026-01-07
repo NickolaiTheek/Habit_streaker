@@ -40,7 +40,7 @@ export default function Home() {
     loadData();
   }, [loadData]);
 
-  const handleHabitComplete = (habitId: string) => {
+  const handleHabitComplete = () => {
     setShowReward(true);
     setRewardType("confetti");
     setTimeout(() => setShowReward(false), 3000);
@@ -152,7 +152,7 @@ export default function Home() {
           >
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
               <Zap className="w-6 h-6 text-yellow-500" />
-              Today's Habits
+              Today&apos;s Habits
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {habits.map((habit, index) => (

@@ -117,13 +117,12 @@ const calculateStreakFromDates = (completedDates: string[]): number => {
   if (completedDates.length === 0) return 0;
 
   const today = getTodayString();
-  const yesterday = getYesterdayString();
   
   // Sort dates in descending order (most recent first)
   const sortedDates = [...completedDates].sort().reverse();
 
   let streak = 0;
-  let currentDate = new Date(today);
+  const currentDate = new Date(today);
 
   // Check backwards from today
   for (let i = 0; i < 365; i++) {
@@ -271,9 +270,11 @@ export const useHabitStore = create<HabitStore>()(
           const date = new Date(today);
           date.setDate(date.getDate() - i);
           const dateStr = date.toISOString().split("T")[0];
-          const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
           weekData[dateStr] = 0;
         }
+
+        // Helper to get day name
+        const getDayName = (date: Date) => date.toLocaleDateString("en-US", { weekday: "short" });
 
         // Count completions for each day
         habits.forEach((habit) => {

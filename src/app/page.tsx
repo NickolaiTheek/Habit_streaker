@@ -1,6 +1,7 @@
 "use client";
 
 import AdvancedCharts from "@/components/AdvancedCharts";
+import AchievementBadges from "@/components/AchievementBadges";
 import HabitCard from "@/components/HabitCard";
 import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
@@ -213,6 +214,9 @@ export default function Home() {
 
           {/* Advanced Charts */}
           <AdvancedCharts />
+
+          {/* Achievement Badges */}
+          <AchievementBadges />
         </main>
       </div>
 

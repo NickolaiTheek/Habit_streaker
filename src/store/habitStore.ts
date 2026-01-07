@@ -13,6 +13,17 @@ export interface Habit {
   isCompletedToday: boolean;
 }
 
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt: string | null;
+  progress: number;
+  target: number;
+  category: "streak" | "completion" | "consistency" | "milestone";
+}
+
 export interface Stats {
   level: number;
   totalPoints: number;
@@ -25,6 +36,7 @@ export interface Stats {
 interface HabitStore {
   habits: Habit[];
   stats: Stats;
+  achievements: Achievement[];
   initializeHabits: () => void;
   toggleHabit: (id: string) => void;
   loadData: () => void;
@@ -34,6 +46,8 @@ interface HabitStore {
   addHabit: (name: string, icon: string, color: string) => void;
   updateHabit: (id: string, name: string, icon: string, color: string) => void;
   deleteHabit: (id: string) => void;
+  getAchievements: () => Achievement[];
+  checkAchievements: () => void;
 }
 
 const defaultHabits: Habit[] = [
@@ -102,6 +116,103 @@ const defaultHabits: Habit[] = [
     completedDates: [],
     lastCompleted: null,
     isCompletedToday: false,
+  },
+];
+
+const DEFAULT_ACHIEVEMENTS: Achievement[] = [
+  // Streak Achievements
+  {
+    id: "streak-7",
+    name: "7-Day Warrior",
+    description: "Maintain a 7-day habit streak",
+    icon: "🔥",
+    unlockedAt: null,
+    progress: 0,
+    target: 7,
+    category: "streak",
+  },
+  {
+    id: "streak-30",
+    name: "Month Master",
+    description: "Maintain a 30-day habit streak",
+    icon: "⭐",
+    unlockedAt: null,
+    progress: 0,
+    target: 30,
+    category: "streak",
+  },
+  {
+    id: "streak-100",
+    name: "Unstoppable",
+    description: "Maintain a 100-day habit streak",
+    icon: "💎",
+    unlockedAt: null,
+    progress: 0,
+    target: 100,
+    category: "streak",
+  },
+  // Completion Achievements
+  {
+    id: "complete-10",
+    name: "Getting Started",
+    description: "Complete 10 total habits",
+    icon: "🚀",
+    unlockedAt: null,
+    progress: 0,
+    target: 10,
+    category: "completion",
+  },
+  {
+    id: "complete-100",
+    name: "Century Club",
+    description: "Complete 100 total habits",
+    icon: "💯",
+    unlockedAt: null,
+    progress: 0,
+    target: 100,
+    category: "completion",
+  },
+  {
+    id: "complete-500",
+    name: "Habit Legend",
+    description: "Complete 500 total habits",
+    icon: "👑",
+    unlockedAt: null,
+    progress: 0,
+    target: 500,
+    category: "completion",
+  },
+  // Consistency Achievements
+  {
+    id: "consistency-80",
+    name: "Consistency King",
+    description: "Achieve 80% completion rate",
+    icon: "📈",
+    unlockedAt: null,
+    progress: 0,
+    target: 80,
+    category: "consistency",
+  },
+  {
+    id: "perfect-week",
+    name: "Perfect Week",
+    description: "Complete all habits for 7 consecutive days",
+    icon: "✨",
+    unlockedAt: null,
+    progress: 0,
+    target: 7,
+    category: "milestone",
+  },
+  // Milestone Achievements
+  {
+    id: "milestone-all-habits",
+    name: "Collector",
+    description: "Create 5 different habits",
+    icon: "🎯",
+    unlockedAt: null,
+    progress: 0,
+    target: 5,
+    category: "milestone",
   },
 ];
 
@@ -184,6 +295,7 @@ export const useHabitStore = create<HabitStore>()(
         completedToday: 0,
         achievements: 0,
       },
+      achievements: DEFAULT_ACHIEVEMENTS,
 
       initializeHabits: () => {
         const stored = localStorage.getItem("habit-store");
@@ -259,7 +371,10 @@ export const useHabitStore = create<HabitStore>()(
           });
 
           const stats = calculateStats(updatedHabits);
-          return { habits: updatedHabits, stats };
+          set({ habits: updatedHabits, stats });
+          
+          // Check achievements after updating habits
+          setTimeout(() => get().checkAchievements(), 0);
         });
       },
 
@@ -388,6 +503,83 @@ export const useHabitStore = create<HabitStore>()(
           const stats = calculateStats(updatedHabits);
           return { habits: updatedHabits, stats };
         });
+      },
+
+      getAchievements: () => {
+        return get().achievements;
+      },
+
+      checkAchievements: () => {
+        const { habits, achievements } = get();
+        const today = getTodayString();
+
+        const totalCompletions = habits.reduce((sum, h) => sum + h.completedDates.length, 0);
+        const bestStreak = Math.max(...habits.map((h) => h.bestStreak), 0);
+        const completionRate = habits.length > 0
+          ? Math.round((habits.filter((h) => h.isCompletedToday).length / habits.length) * 100)
+          : 0;
+
+        const updatedAchievements = achievements.map((achievement) => {
+          if (achievement.unlockedAt) return achievement;
+
+          let progress = 0;
+          let shouldUnlock = false;
+
+          switch (achievement.id) {
+            case "streak-7":
+            case "streak-30":
+            case "streak-100":
+              progress = bestStreak;
+              shouldUnlock = bestStreak >= achievement.target;
+              break;
+
+            case "complete-10":
+            case "complete-100":
+            case "complete-500":
+              progress = totalCompletions;
+              shouldUnlock = totalCompletions >= achievement.target;
+              break;
+
+            case "consistency-80":
+              progress = completionRate;
+              shouldUnlock = completionRate >= achievement.target;
+              break;
+
+            case "perfect-week":
+              {
+                let perfectDays = 0;
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+                for (let i = 0; i < 7; i++) {
+                  const checkDate = new Date(sevenDaysAgo);
+                  checkDate.setDate(checkDate.getDate() + i);
+                  const dateStr = checkDate.toISOString().split("T")[0];
+                  const allCompleted = habits.every((h) =>
+                    h.completedDates.includes(dateStr)
+                  );
+                  if (allCompleted && habits.length > 0) perfectDays++;
+                }
+
+                progress = perfectDays;
+                shouldUnlock = perfectDays >= 7 && habits.length > 0;
+              }
+              break;
+
+            case "milestone-all-habits":
+              progress = habits.length;
+              shouldUnlock = habits.length >= achievement.target;
+              break;
+          }
+
+          return {
+            ...achievement,
+            progress: Math.min(progress, achievement.target),
+            unlockedAt: shouldUnlock ? today : achievement.unlockedAt,
+          };
+        });
+
+        set({ achievements: updatedAchievements });
       },
     }),
     {

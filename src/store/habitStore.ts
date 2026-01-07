@@ -371,10 +371,11 @@ export const useHabitStore = create<HabitStore>()(
           });
 
           const stats = calculateStats(updatedHabits);
-          set({ habits: updatedHabits, stats });
           
-          // Check achievements after updating habits
+          // Schedule achievement check
           setTimeout(() => get().checkAchievements(), 0);
+          
+          return { habits: updatedHabits, stats };
         });
       },
 

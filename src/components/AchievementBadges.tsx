@@ -1,9 +1,9 @@
 "use client";
 
 import { useHabitStore } from "@/store/habitStore";
-import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, Lock } from "lucide-react";
-import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Lock, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function AchievementBadges() {
   const { getAchievements, checkAchievements } = useHabitStore();

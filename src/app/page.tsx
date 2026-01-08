@@ -3,6 +3,7 @@
 import AchievementBadges from "@/components/AchievementBadges";
 import AdvancedCharts from "@/components/AdvancedCharts";
 import HabitCard from "@/components/HabitCard";
+import HabitFilter from "@/components/HabitFilter";
 import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
 import InteractiveScene from "@/components/InteractiveScene";
@@ -22,6 +23,7 @@ import {
     Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { FilterType, SortType } from "@/components/HabitFilter";
 
 function BackgroundGradient() {
   return (
@@ -40,6 +42,9 @@ export default function Home() {
   const [rewardType, setRewardType] = useState<"confetti" | "trophy" | "star">("confetti");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | undefined>();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState<FilterType>("all");
+  const [sortBy, setSortBy] = useState<SortType>("streak");
 
   useEffect(() => {
     loadData();
@@ -65,6 +70,47 @@ export default function Home() {
     setModalOpen(false);
     setEditingHabit(undefined);
   };
+
+  // Filter and search habits
+  const filteredHabits = habits
+    .filter((habit) => {
+      // Search filter
+      const matchesSearch = habit.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      if (!matchesSearch) return false;
+
+      // Status filter
+      switch (filterType) {
+        case "completed":
+          return habit.isCompletedToday;
+        case "active-streak":
+          return habit.streak > 0;
+        case "not-completed":
+          return !habit.isCompletedToday;
+        case "all":
+        default:
+          return true;
+      }
+    })
+    .sort((a, b) => {
+      // Sorting logic
+      switch (sortBy) {
+        case "streak":
+          return b.streak - a.streak; // Highest streak first
+        case "name":
+          return a.name.localeCompare(b.name); // Alphabetical
+        case "last-completed":
+          {
+            const aDate = a.lastCompleted ? new Date(a.lastCompleted) : new Date(0);
+            const bDate = b.lastCompleted ? new Date(b.lastCompleted) : new Date(0);
+            return bDate.getTime() - aDate.getTime(); // Most recent first
+          }
+        default:
+          return 0;
+      }
+    });
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -185,17 +231,46 @@ export default function Home() {
                 Add Habit
               </motion.button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {habits.map((habit, index) => (
-                <HabitCard
-                  key={habit.id}
-                  habit={habit}
-                  onComplete={handleHabitComplete}
-                  onEdit={handleEditHabit}
-                  index={index}
-                />
-              ))}
-            </div>
+
+            {/* Filter Component */}
+            <HabitFilter
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              activeFilter={filterType}
+              onFilterChange={setFilterType}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              totalHabits={habits.length}
+              filteredCount={filteredHabits.length}
+            />
+
+            {/* Habits Grid or Empty State */}
+            {filteredHabits.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredHabits.map((habit, index) => (
+                  <HabitCard
+                    key={habit.id}
+                    habit={habit}
+                    onComplete={handleHabitComplete}
+                    onEdit={handleEditHabit}
+                    index={index}
+                  />
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-12"
+              >
+                <p className="text-slate-400 text-lg mb-2">No habits found</p>
+                <p className="text-slate-500 text-sm">
+                  {searchQuery
+                    ? `Try adjusting your search: "${searchQuery}"`
+                    : "Create your first habit to get started!"}
+                </p>
+              </motion.div>
+            )}
           </motion.section>
 
           {/* Heatmap Calendar */}

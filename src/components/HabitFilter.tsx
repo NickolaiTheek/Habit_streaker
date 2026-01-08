@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, X, Filter } from "lucide-react";
+import { Filter, Search, X } from "lucide-react";
 import { useState } from "react";
 
 export type FilterType = "all" | "completed" | "active-streak" | "not-completed";

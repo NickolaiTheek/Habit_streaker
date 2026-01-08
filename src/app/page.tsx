@@ -3,7 +3,7 @@
 import AchievementBadges from "@/components/AchievementBadges";
 import AdvancedCharts from "@/components/AdvancedCharts";
 import HabitCard from "@/components/HabitCard";
-import HabitFilter from "@/components/HabitFilter";
+import HabitFilter, { FilterType, SortType } from "@/components/HabitFilter";
 import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
 import InteractiveScene from "@/components/InteractiveScene";
@@ -23,7 +23,6 @@ import {
     Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { FilterType, SortType } from "@/components/HabitFilter";
 
 function BackgroundGradient() {
   return (

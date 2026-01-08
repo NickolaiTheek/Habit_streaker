@@ -168,7 +168,7 @@ export default function HabitFilter({
               {searchQuery && (
                 <>
                   {" "}
-                  matching "<span className="text-blue-400">{searchQuery}</span>"
+                  matching &quot;<span className="text-blue-400">{searchQuery}</span>&quot;
                 </>
               )}
             </p>

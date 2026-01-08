@@ -265,7 +265,7 @@ export default function Home() {
                 <p className="text-slate-400 text-lg mb-2">No habits found</p>
                 <p className="text-slate-500 text-sm">
                   {searchQuery
-                    ? `Try adjusting your search: "${searchQuery}"`
+                    ? `Try adjusting your search: &quot;${searchQuery}&quot;`
                     : "Create your first habit to get started!"}
                 </p>
               </motion.div>

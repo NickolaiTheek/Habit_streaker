@@ -1,14 +1,16 @@
 "use client";
 
 import AchievementBadges from "@/components/AchievementBadges";
+import AddHabitButton3D from "@/components/AddHabitButton3D";
 import AdvancedCharts from "@/components/AdvancedCharts";
 import HabitCard from "@/components/HabitCard";
 import HabitFilter, { FilterType, SortType } from "@/components/HabitFilter";
 import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
-import InteractiveScene from "@/components/InteractiveScene";
+// import InteractiveScene from "@/components/InteractiveScene";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import RewardAnimation from "@/components/RewardAnimation";
+import SplineScene from "@/components/SplineScene";
 import StatsCard from "@/components/StatsCard";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,7 +18,6 @@ import {
   Award,
   Calendar,
   Flame,
-  Plus,
   Star,
   Target,
   TrendingUp,
@@ -104,8 +105,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Interactive 3D Scene */}
-      <InteractiveScene />
+      {/* Interactive 3D Scene - Commented out to use Spline */}
+      {/* <InteractiveScene /> */}
+
+      {/* Spline 3D Scene */}
+      <SplineScene />
 
       {/* Particles Background */}
       <ParticlesBackground />
@@ -219,15 +223,9 @@ export default function Home() {
                 <Zap className="w-6 h-6 text-yellow-500" />
                 Today&apos;s Habits
               </h2>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAddHabit}
-                className="glass-strong hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-all"
-              >
-                <Plus className="w-5 h-5" />
-                Add Habit
-              </motion.button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <AddHabitButton3D onClick={handleAddHabit} />
+              </motion.div>
             </div>
 
             {/* Filter Component */}

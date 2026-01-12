@@ -7,33 +7,24 @@ import HabitFilter, { FilterType, SortType } from "@/components/HabitFilter";
 import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
 import InteractiveScene from "@/components/InteractiveScene";
+import ParticlesBackground from "@/components/ParticlesBackground";
 import RewardAnimation from "@/components/RewardAnimation";
 import StatsCard from "@/components/StatsCard";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-    Award,
-    Calendar,
-    Flame,
-    Plus,
-    Star,
-    Target,
-    TrendingUp,
-    Trophy,
-    Zap
+  Award,
+  Calendar,
+  Flame,
+  Plus,
+  Star,
+  Target,
+  TrendingUp,
+  Trophy,
+  Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function BackgroundGradient() {
-  return (
-    <div className="absolute inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
-      <div className="absolute top-0 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
-      <div className="absolute -bottom-8 left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
-      <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
-    </div>
-  );
-}
 
 export default function Home() {
   const { habits, stats, loadData } = useHabitStore();
@@ -116,8 +107,16 @@ export default function Home() {
       {/* Interactive 3D Scene */}
       <InteractiveScene />
 
+      {/* Particles Background */}
+      <ParticlesBackground />
+
       {/* Gradient Background */}
-      <BackgroundGradient />
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-purple-900/80 to-slate-900/80" />
+        <div className="absolute top-0 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" />
+        <div className="absolute -bottom-8 left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" />
+      </div>
 
       {/* Reward Animations */}
       <AnimatePresence>
@@ -265,7 +264,7 @@ export default function Home() {
                 <p className="text-slate-400 text-lg mb-2">No habits found</p>
                 <p className="text-slate-500 text-sm">
                   {searchQuery
-                    ? `Try adjusting your search: &quot;${searchQuery}&quot;`
+                    ? `Try adjusting your search: "${searchQuery}"`
                     : "Create your first habit to get started!"}
                 </p>
               </motion.div>

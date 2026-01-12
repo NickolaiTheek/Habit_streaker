@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { loadFull } from "tsparticles";
 import { type Container, type ISourceOptions } from "@tsparticles/engine";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { useEffect, useState } from "react";
+import { loadFull } from "tsparticles";
 
 export default function ParticlesBackground() {
   const [init, setInit] = useState(false);
@@ -76,7 +76,7 @@ export default function ParticlesBackground() {
         value: 100,
       },
       opacity: {
-        value: 0.2,
+        value: 0.4,
       },
       shape: {
         type: "circle",
@@ -94,7 +94,7 @@ export default function ParticlesBackground() {
         id="tsparticles"
         particlesLoaded={particlesLoaded}
         options={options}
-        className="absolute inset-0 -z-10"
+        className="fixed inset-0 -z-1"
       />
     );
   }

@@ -10,6 +10,7 @@ import HeatmapCalendar from "@/components/HeatmapCalendar";
 // import InteractiveScene from "@/components/InteractiveScene";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import RewardAnimation from "@/components/RewardAnimation";
+import SplineScene from "@/components/SplineScene";
 import StatsCard from "@/components/StatsCard";
 import ThemeStoreModal from "@/components/ThemeStoreModal";
 import { useHabitStore, type Habit } from "@/store/habitStore";

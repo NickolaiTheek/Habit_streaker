@@ -1,3 +1,4 @@
+import { format, parseISO, subDays } from "date-fns";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -257,8 +258,9 @@ const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   },
 ];
 
+
 const getTodayString = () => {
-  return new Date().toISOString().split("T")[0];
+  return format(new Date(), "yyyy-MM-dd");
 };
 
 // Calculate current streak based on consecutive completed dates
@@ -266,22 +268,27 @@ const calculateStreakFromDates = (completedDates: string[]): number => {
   if (completedDates.length === 0) return 0;
 
   const today = getTodayString();
+  const yesterday = format(subDays(new Date(), 1), "yyyy-MM-dd");
 
-  // Sort dates in descending order (most recent first)
-  const sortedDates = [...completedDates].sort().reverse();
+  // Determine start date for streak check
+  let currentCheckDateStr = today;
+  if (!completedDates.includes(today) && completedDates.includes(yesterday)) {
+    currentCheckDateStr = yesterday;
+  } else if (!completedDates.includes(today)) {
+    return 0; // Not done today or yesterday, streak broken
+  }
 
   let streak = 0;
-  const currentDate = new Date(today);
+  let checkDate = parseISO(currentCheckDateStr);
 
-  // Check backwards from today
+  // Check backwards up to 365 days (or until break)
   for (let i = 0; i < 365; i++) {
-    const dateString = currentDate.toISOString().split("T")[0];
+    const dateStr = format(checkDate, "yyyy-MM-dd");
 
-    if (sortedDates.includes(dateString)) {
+    if (completedDates.includes(dateStr)) {
       streak++;
-      currentDate.setDate(currentDate.getDate() - 1);
+      checkDate = subDays(checkDate, 1);
     } else {
-      // Streak broken, stop counting
       break;
     }
   }

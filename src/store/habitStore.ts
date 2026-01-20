@@ -289,15 +289,6 @@ const calculateStreakFromDates = (completedDates: string[]): number => {
   return streak;
 };
 
-return {
-  level,
-  totalPoints,
-  currentStreak: Math.floor(currentStreak),
-  bestStreak,
-  completedToday,
-  achievements,
-};
-};
 
 export const useHabitStore = create<HabitStore>()(
   persist(
@@ -498,7 +489,7 @@ export const useHabitStore = create<HabitStore>()(
 
         set((state) => {
           const updatedHabits = [...state.habits, newHabit];
-          const stats = calculateStats(updatedHabits);
+          const stats = { ...state.stats, ...calculateStats(updatedHabits) };
           return { habits: updatedHabits, stats };
         });
       },
@@ -508,7 +499,7 @@ export const useHabitStore = create<HabitStore>()(
           const updatedHabits = state.habits.map((habit) =>
             habit.id === id ? { ...habit, name, icon, color } : habit
           );
-          const stats = calculateStats(updatedHabits);
+          const stats = { ...state.stats, ...calculateStats(updatedHabits) };
           return { habits: updatedHabits, stats };
         });
       },
@@ -516,7 +507,7 @@ export const useHabitStore = create<HabitStore>()(
       deleteHabit: (id: string) => {
         set((state) => {
           const updatedHabits = state.habits.filter((habit) => habit.id !== id);
-          const stats = calculateStats(updatedHabits);
+          const stats = { ...state.stats, ...calculateStats(updatedHabits) };
           return { habits: updatedHabits, stats };
         });
       },

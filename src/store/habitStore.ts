@@ -55,7 +55,6 @@ interface HabitStore {
 }
 
 const calculateStats = (habits: Habit[]): Omit<Stats, "currentTheme" | "unlockedThemes"> => {
-  const today = getTodayString();
   let totalPoints = 0;
   let completedToday = 0;
   let overallBestStreak = 0;

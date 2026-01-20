@@ -53,6 +53,44 @@ interface HabitStore {
   setTheme: (theme: string) => void;
 }
 
+const calculateStats = (habits: Habit[]): Omit<Stats, "currentTheme" | "unlockedThemes"> => {
+  const today = getTodayString();
+  let totalPoints = 0;
+  let completedToday = 0;
+  let overallBestStreak = 0;
+  let overallCurrentStreak = 0;
+
+  habits.forEach((habit) => {
+    totalPoints += habit.completedDates.length * 10; // 10 points per completion
+    if (habit.isCompletedToday) {
+      completedToday++;
+    }
+    if (habit.bestStreak > overallBestStreak) {
+      overallBestStreak = habit.bestStreak;
+    }
+    // For overall current streak, we might need a more complex logic
+    // For simplicity, let's just take the max current streak among habits
+    if (habit.streak > overallCurrentStreak) {
+      overallCurrentStreak = habit.streak;
+    }
+  });
+
+  // Level calculation (example: 100 points per level)
+  const level = Math.floor(totalPoints / 100) + 1;
+
+  // Placeholder for achievements count, will be updated by checkAchievements
+  const achievements = 0;
+
+  return {
+    level,
+    totalPoints,
+    currentStreak: overallCurrentStreak,
+    bestStreak: overallBestStreak,
+    completedToday,
+    achievements,
+  };
+};
+
 const defaultHabits: Habit[] = [
   {
     id: "1",
@@ -251,37 +289,14 @@ const calculateStreakFromDates = (completedDates: string[]): number => {
   return streak;
 };
 
-const calculateStats = (habits: Habit[]): Stats => {
-  if (!habits.length) {
-    return {
-      level: 1,
-      totalPoints: 0,
-      currentStreak: 0,
-      bestStreak: 0,
-      completedToday: 0,
-      achievements: 0,
-      currentTheme: "default",
-      unlockedThemes: ["default"],
-    };
-  }
-
-  const completedToday = habits.filter((h) => h.isCompletedToday).length;
-  const totalPoints = habits.reduce((sum, h) => sum + h.streak * 10, 0);
-  const level = Math.floor(totalPoints / 100) + 1;
-  const currentStreak = habits.reduce((sum, h) => sum + h.streak, 0) / habits.length;
-  const bestStreak = Math.max(...habits.map((h) => h.bestStreak), 0);
-  const achievements = Math.floor(totalPoints / 500);
-
-  return {
-    level,
-    totalPoints,
-    currentStreak: Math.floor(currentStreak),
-    bestStreak,
-    completedToday,
-    achievements,
-    currentTheme: habits.length > 0 && "currentTheme" in habits[0] ? (habits[0] as any).currentTheme : "default",
-    unlockedThemes: ["default"],
-  };
+return {
+  level,
+  totalPoints,
+  currentStreak: Math.floor(currentStreak),
+  bestStreak,
+  completedToday,
+  achievements,
+};
 };
 
 export const useHabitStore = create<HabitStore>()(

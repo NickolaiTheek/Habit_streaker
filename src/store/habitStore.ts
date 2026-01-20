@@ -344,7 +344,7 @@ export const useHabitStore = create<HabitStore>()(
           };
         });
 
-        const stats = calculateStats(updatedHabits);
+        const stats = { ...get().stats, ...calculateStats(updatedHabits) };
         set({ habits: updatedHabits, stats });
       },
 
@@ -388,7 +388,7 @@ export const useHabitStore = create<HabitStore>()(
             };
           });
 
-          const stats = calculateStats(updatedHabits);
+          const stats = { ...state.stats, ...calculateStats(updatedHabits) };
 
           // Schedule achievement check
           setTimeout(() => get().checkAchievements(), 0);

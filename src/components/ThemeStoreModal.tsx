@@ -18,7 +18,7 @@ const themes = [
 
 export default function ThemeStoreModal({ isOpen, onClose }: ThemeStoreModalProps) {
     const { stats, setTheme } = useHabitStore();
-    const { level, currentTheme, unlockedThemes } = stats;
+    const { currentTheme, unlockedThemes } = stats;
 
     if (!isOpen) return null;
 
@@ -59,8 +59,8 @@ export default function ThemeStoreModal({ isOpen, onClose }: ThemeStoreModalProp
                                     onClick={() => isUnlocked && setTheme(theme.id)}
                                     disabled={!isUnlocked}
                                     className={`relative group overflow-hidden rounded-xl border-2 transition-all p-4 text-left h-32 flex flex-col justify-between ${isActive
-                                            ? "border-green-500 bg-slate-800/50"
-                                            : "border-slate-800 bg-slate-900 hover:border-slate-600"
+                                        ? "border-green-500 bg-slate-800/50"
+                                        : "border-slate-800 bg-slate-900 hover:border-slate-600"
                                         }`}
                                 >
                                     {/* Theme Preview Gradient or Color */}

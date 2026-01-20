@@ -12,12 +12,14 @@ import ParticlesBackground from "@/components/ParticlesBackground";
 import RewardAnimation from "@/components/RewardAnimation";
 import SplineScene from "@/components/SplineScene";
 import StatsCard from "@/components/StatsCard";
+import ThemeStoreModal from "@/components/ThemeStoreModal";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
   Calendar,
   Flame,
+  Palette,
   Star,
   Target,
   TrendingUp,
@@ -32,6 +34,7 @@ export default function Home() {
   const [showReward, setShowReward] = useState(false);
   const [rewardType, setRewardType] = useState<"confetti" | "trophy" | "star">("confetti");
   const [modalOpen, setModalOpen] = useState(false);
+  const [themeModalOpen, setThemeModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
@@ -104,7 +107,7 @@ export default function Home() {
     });
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className={`min-h-screen relative overflow-hidden ${stats.currentTheme ? `theme-${stats.currentTheme}` : ""}`}>
       {/* Interactive 3D Scene - Commented out to use Spline */}
       {/* <InteractiveScene /> */}
 
@@ -152,6 +155,13 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setThemeModalOpen(true)}
+                  className="glass px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/10 transition-colors"
+                >
+                  <Palette className="w-5 h-5 text-pink-500" />
+                  <span className="hidden sm:inline font-bold">Themes</span>
+                </button>
                 <div className="glass px-4 py-2 rounded-lg flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-yellow-500" />
                   <span className="font-bold text-lg">{stats.totalPoints}</span>
@@ -297,6 +307,7 @@ export default function Home() {
         onClose={handleCloseModal}
         habit={editingHabit}
       />
+      <ThemeStoreModal isOpen={themeModalOpen} onClose={() => setThemeModalOpen(false)} />
     </div>
   );
 }

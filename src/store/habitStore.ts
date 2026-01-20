@@ -31,6 +31,8 @@ export interface Stats {
   bestStreak: number;
   completedToday: number;
   achievements: number;
+  currentTheme: string;
+  unlockedThemes: string[];
 }
 
 interface HabitStore {
@@ -48,6 +50,7 @@ interface HabitStore {
   deleteHabit: (id: string) => void;
   getAchievements: () => Achievement[];
   checkAchievements: () => void;
+  setTheme: (theme: string) => void;
 }
 
 const defaultHabits: Habit[] = [
@@ -225,7 +228,7 @@ const calculateStreakFromDates = (completedDates: string[]): number => {
   if (completedDates.length === 0) return 0;
 
   const today = getTodayString();
-  
+
   // Sort dates in descending order (most recent first)
   const sortedDates = [...completedDates].sort().reverse();
 
@@ -235,7 +238,7 @@ const calculateStreakFromDates = (completedDates: string[]): number => {
   // Check backwards from today
   for (let i = 0; i < 365; i++) {
     const dateString = currentDate.toISOString().split("T")[0];
-    
+
     if (sortedDates.includes(dateString)) {
       streak++;
       currentDate.setDate(currentDate.getDate() - 1);
@@ -257,6 +260,8 @@ const calculateStats = (habits: Habit[]): Stats => {
       bestStreak: 0,
       completedToday: 0,
       achievements: 0,
+      currentTheme: "default",
+      unlockedThemes: ["default"],
     };
   }
 
@@ -274,6 +279,8 @@ const calculateStats = (habits: Habit[]): Stats => {
     bestStreak,
     completedToday,
     achievements,
+    currentTheme: habits.length > 0 && "currentTheme" in habits[0] ? (habits[0] as any).currentTheme : "default",
+    unlockedThemes: ["default"],
   };
 };
 
@@ -288,6 +295,8 @@ export const useHabitStore = create<HabitStore>()(
         bestStreak: 0,
         completedToday: 0,
         achievements: 0,
+        currentTheme: "default",
+        unlockedThemes: ["default"],
       },
       achievements: DEFAULT_ACHIEVEMENTS,
 
@@ -309,7 +318,7 @@ export const useHabitStore = create<HabitStore>()(
         const today = getTodayString();
         const updatedHabits = baseHabits.map((habit) => {
           const isCompletedToday = habit.completedDates.includes(today);
-          
+
           // Recalculate streak from completed dates
           const currentStreak = calculateStreakFromDates(habit.completedDates);
 
@@ -326,13 +335,13 @@ export const useHabitStore = create<HabitStore>()(
 
       toggleHabit: (id: string) => {
         const today = getTodayString();
-        
+
         set((state) => {
           const updatedHabits = state.habits.map((habit) => {
             if (habit.id !== id) return habit;
 
             const isCompletedToday = habit.completedDates.includes(today);
-            
+
             let newCompletedDates = [...habit.completedDates];
             let newBestStreak = habit.bestStreak;
 
@@ -346,7 +355,7 @@ export const useHabitStore = create<HabitStore>()(
 
             // Recalculate streak from the updated completed dates
             const newStreak = calculateStreakFromDates(newCompletedDates);
-            
+
             // Update best streak if current streak is higher
             if (newStreak > newBestStreak) {
               newBestStreak = newStreak;
@@ -357,18 +366,18 @@ export const useHabitStore = create<HabitStore>()(
               completedDates: newCompletedDates,
               streak: newStreak,
               bestStreak: newBestStreak,
-              lastCompleted: newCompletedDates.length > 0 
-                ? newCompletedDates[newCompletedDates.length - 1] 
+              lastCompleted: newCompletedDates.length > 0
+                ? newCompletedDates[newCompletedDates.length - 1]
                 : null,
               isCompletedToday: !isCompletedToday,
             };
           });
 
           const stats = calculateStats(updatedHabits);
-          
+
           // Schedule achievement check
           setTimeout(() => get().checkAchievements(), 0);
-          
+
           return { habits: updatedHabits, stats };
         });
       },
@@ -572,6 +581,39 @@ export const useHabitStore = create<HabitStore>()(
         });
 
         set({ achievements: updatedAchievements });
+
+        // Check for theme unlocks
+        const currentLevel = get().stats.level;
+        const currentUnlocked = get().stats.unlockedThemes;
+        const newUnlocked = [...currentUnlocked];
+
+        if (currentLevel >= 5 && !newUnlocked.includes("sunset")) {
+          newUnlocked.push("sunset");
+        }
+        if (currentLevel >= 10 && !newUnlocked.includes("cyberpunk")) {
+          newUnlocked.push("cyberpunk");
+        }
+        if (currentLevel >= 20 && !newUnlocked.includes("monochrome")) {
+          newUnlocked.push("monochrome");
+        }
+
+        if (newUnlocked.length > currentUnlocked.length) {
+          set((state) => ({
+            stats: {
+              ...state.stats,
+              unlockedThemes: newUnlocked,
+            }
+          }));
+        }
+      },
+
+      setTheme: (theme: string) => {
+        set((state) => ({
+          stats: {
+            ...state.stats,
+            currentTheme: theme,
+          },
+        }));
       },
     }),
     {

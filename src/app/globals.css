@@ -30,6 +30,34 @@
   --chart-5: 27 87% 67%;
 }
 
+.theme-sunset {
+  --background: 10 20% 10%;
+  --foreground: 10 40% 98%;
+  --card: 10 20% 12%;
+  --primary: 15 80% 50%; /* Orange */
+  --secondary: 15 30% 20%;
+  --accent: 280 60% 50%; /* Purple */
+}
+
+.theme-cyberpunk {
+  --background: 280 40% 5%;
+  --foreground: 300 100% 95%;
+  --card: 280 40% 8%;
+  --primary: 320 100% 50%; /* Neon Pink */
+  --secondary: 190 100% 40%; /* Cyan */
+  --accent: 190 100% 50%;
+}
+
+.theme-monochrome {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 10%;
+  --primary: 0 0% 100%;
+  --secondary: 0 0% 20%;
+  --accent: 0 0% 40%;
+  --muted: 0 0% 20%;
+}
+
 * {
   border-color: hsl(var(--border));
 }

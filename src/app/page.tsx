@@ -107,7 +107,7 @@ export default function Home() {
     });
 
   return (
-    <div className={`min-h-screen relative overflow-hidden ${stats.currentTheme ? `theme-${stats.currentTheme}` : ""}`}>
+    <div className={`min-h-screen relative overflow-hidden ${isClient && stats.currentTheme ? `theme-${stats.currentTheme}` : ""}`}>
       {/* Interactive 3D Scene - Commented out to use Spline */}
       {/* <InteractiveScene /> */}
 

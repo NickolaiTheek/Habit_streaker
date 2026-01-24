@@ -596,7 +596,8 @@ export const useHabitStore = create<HabitStore>()(
 
         // Check for theme unlocks
         const currentLevel = get().stats.level;
-        const currentUnlocked = get().stats.unlockedThemes;
+        // Fallback to ["default"] if unlockedThemes is undefined (migration for existing users)
+        const currentUnlocked = get().stats.unlockedThemes || ["default"];
         const newUnlocked = [...currentUnlocked];
 
         if (currentLevel >= 5 && !newUnlocked.includes("sunset")) {

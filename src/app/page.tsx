@@ -158,6 +158,12 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-4">
                 <button
+                  onClick={toggleMute}
+                  className="glass px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/10 transition-colors"
+                >
+                  {isMuted ? <VolumeX className="w-5 h-5 text-slate-400" /> : <Volume2 className="w-5 h-5 text-green-400" />}
+                </button>
+                <button
                   onClick={() => setThemeModalOpen(true)}
                   className="glass px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/10 transition-colors"
                 >

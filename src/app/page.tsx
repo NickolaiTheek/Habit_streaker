@@ -13,6 +13,7 @@ import RewardAnimation from "@/components/RewardAnimation";
 import SplineScene from "@/components/SplineScene";
 import StatsCard from "@/components/StatsCard";
 import ThemeStoreModal from "@/components/ThemeStoreModal";
+import useSound from "@/hooks/useSound";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -24,6 +25,8 @@ import {
   Target,
   TrendingUp,
   Trophy,
+  Volume2,
+  VolumeX,
   Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -40,6 +43,7 @@ export default function Home() {
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [sortBy, setSortBy] = useState<SortType>("streak");
   const [isClient, setIsClient] = useState(false);
+  const { isMuted, toggleMute } = useSound();
 
   useEffect(() => {
     setIsClient(true);

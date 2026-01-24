@@ -5,6 +5,7 @@ import { useHabitStore, type Habit } from "@/store/habitStore";
 import { motion } from "framer-motion";
 import { CheckCircle2, Edit2, Flame, Trash2 } from "lucide-react";
 
+import useSound from "@/hooks/useSound";
 import HabitIcon3D from "./HabitIcon3D";
 
 interface HabitCardProps {
@@ -16,8 +17,12 @@ interface HabitCardProps {
 
 export default function HabitCard({ habit, onComplete, onEdit, index }: HabitCardProps) {
   const { toggleHabit, deleteHabit } = useHabitStore();
+  const { playSfx } = useSound();
 
   const handleClick = () => {
+    if (!habit.isCompletedToday) {
+      playSfx("complete");
+    }
     toggleHabit(habit.id);
     onComplete(habit.id);
   };

@@ -5,6 +5,8 @@ import { useHabitStore, type Habit } from "@/store/habitStore";
 import { motion } from "framer-motion";
 import { CheckCircle2, Edit2, Flame, Trash2 } from "lucide-react";
 
+import HabitIcon3D from "./HabitIcon3D";
+
 interface HabitCardProps {
   habit: Habit;
   onComplete: (id: string) => void;
@@ -48,14 +50,10 @@ export default function HabitCard({ habit, onComplete, onEdit, index }: HabitCar
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div
-            className={cn(
-              "w-14 h-14 rounded-xl flex items-center justify-center text-3xl bg-gradient-to-br",
-              habit.color
-            )}
-          >
-            {habit.icon}
-          </div>
+          <HabitIcon3D
+            icon={habit.icon}
+            className={cn("w-14 h-14 rounded-xl", habit.color)}
+          />
           <div>
             <h3 className="font-bold text-lg">{habit.name}</h3>
             <p className="text-sm text-muted-foreground">

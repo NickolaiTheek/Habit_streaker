@@ -90,6 +90,7 @@ export default function Home() {
         case "not-completed":
           return !habit.isCompletedToday;
         case "all":
+import WeeklySummary from "@/components/WeeklySummary";
         default:
           return true;
       }

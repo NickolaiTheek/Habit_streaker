@@ -234,6 +234,9 @@ import WeeklySummary from "@/components/WeeklySummary";
             </div>
           </motion.section>
 
+          {/* Weekly Summary */}
+          <WeeklySummary />
+
           {/* Habits Grid */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -284,9 +287,15 @@ import WeeklySummary from "@/components/WeeklySummary";
               >
                 <p className="text-slate-400 text-lg mb-2">No habits found</p>
                 <p className="text-slate-500 text-sm">
-                  {searchQuery
-                    ? `Try adjusting your search: "${searchQuery}"`
-                    : "Create your first habit to get started!"}
+                  {searchQuery ? (
+                    <>
+                      Try adjusting your search: &quot;
+                      <span className="text-blue-400">{searchQuery}</span>
+                      &quot;
+                    </>
+                  ) : (
+                    "Create your first habit to get started!"
+                  )}
                 </p>
               </motion.div>
             )}

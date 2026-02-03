@@ -17,17 +17,17 @@ import useSound from "@/hooks/useSound";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Award,
-  Calendar,
-  Flame,
-  Palette,
-  Star,
-  Target,
-  TrendingUp,
-  Trophy,
-  Volume2,
-  VolumeX,
-  Zap
+    Award,
+    Calendar,
+    Flame,
+    Palette,
+    Star,
+    Target,
+    TrendingUp,
+    Trophy,
+    Volume2,
+    VolumeX,
+    Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
 

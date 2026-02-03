@@ -7,6 +7,7 @@ import HabitCard from "@/components/HabitCard";
 import HabitFilter, { FilterType, SortType } from "@/components/HabitFilter";
 import HabitFormModal from "@/components/HabitFormModal";
 import HeatmapCalendar from "@/components/HeatmapCalendar";
+import WeeklySummary from "@/components/WeeklySummary";
 // import InteractiveScene from "@/components/InteractiveScene";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import RewardAnimation from "@/components/RewardAnimation";
@@ -90,7 +91,6 @@ export default function Home() {
         case "not-completed":
           return !habit.isCompletedToday;
         case "all":
-import WeeklySummary from "@/components/WeeklySummary";
         default:
           return true;
       }

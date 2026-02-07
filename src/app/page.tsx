@@ -3,6 +3,7 @@
 import AchievementBadges from "@/components/AchievementBadges";
 import AddHabitButton3D from "@/components/AddHabitButton3D";
 import AdvancedCharts from "@/components/AdvancedCharts";
+import FocusTimerModal from "@/components/FocusTimerModal";
 import HabitCard from "@/components/HabitCard";
 import HabitFilter, { FilterType, SortType } from "@/components/HabitFilter";
 import HabitFormModal from "@/components/HabitFormModal";
@@ -18,17 +19,17 @@ import useSound from "@/hooks/useSound";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-    Award,
-    Calendar,
-    Flame,
-    Palette,
-    Star,
-    Target,
-    TrendingUp,
-    Trophy,
-    Volume2,
-    VolumeX,
-    Zap
+  Award,
+  Calendar,
+  Flame,
+  Palette,
+  Star,
+  Target,
+  TrendingUp,
+  Trophy,
+  Volume2,
+  VolumeX,
+  Zap
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -40,6 +41,7 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [themeModalOpen, setThemeModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | undefined>();
+  const [timerHabit, setTimerHabit] = useState<Habit | undefined>();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [sortBy, setSortBy] = useState<SortType>("streak");
@@ -65,6 +67,10 @@ export default function Home() {
   const handleEditHabit = (habit: Habit) => {
     setEditingHabit(habit);
     setModalOpen(true);
+  };
+
+  const handleTimer = (habit: Habit) => {
+    setTimerHabit(habit);
   };
 
   const handleCloseModal = () => {
@@ -275,6 +281,7 @@ export default function Home() {
                     habit={habit}
                     onComplete={handleHabitComplete}
                     onEdit={handleEditHabit}
+                    onTimer={handleTimer}
                     index={index}
                   />
                 ))}
@@ -330,6 +337,12 @@ export default function Home() {
         habit={editingHabit}
       />
       <ThemeStoreModal isOpen={themeModalOpen} onClose={() => setThemeModalOpen(false)} />
+      <FocusTimerModal
+        isOpen={!!timerHabit}
+        onClose={() => setTimerHabit(undefined)}
+        habit={timerHabit}
+        onComplete={handleHabitComplete}
+      />
     </div>
   );
 }

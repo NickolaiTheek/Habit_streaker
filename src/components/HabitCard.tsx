@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useHabitStore, type Habit } from "@/store/habitStore";
 import { motion } from "framer-motion";
-import { CheckCircle2, Edit2, Flame, Trash2 } from "lucide-react";
+import { CheckCircle2, Clock, Edit2, Flame, Trash2 } from "lucide-react";
 
 import useSound from "@/hooks/useSound";
 import HabitIcon3D from "./HabitIcon3D";
@@ -12,10 +12,11 @@ interface HabitCardProps {
   habit: Habit;
   onComplete: (id: string) => void;
   onEdit: (habit: Habit) => void;
+  onTimer: (habit: Habit) => void;
   index: number;
 }
 
-export default function HabitCard({ habit, onComplete, onEdit, index }: HabitCardProps) {
+export default function HabitCard({ habit, onComplete, onEdit, onTimer, index }: HabitCardProps) {
   const { toggleHabit, deleteHabit } = useHabitStore();
   const { playSfx } = useSound();
 
@@ -37,6 +38,11 @@ export default function HabitCard({ habit, onComplete, onEdit, index }: HabitCar
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     onEdit(habit);
+  };
+
+  const handleTimer = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onTimer(habit);
   };
 
   return (
@@ -84,6 +90,15 @@ export default function HabitCard({ habit, onComplete, onEdit, index }: HabitCar
             title="Edit habit"
           >
             <Edit2 className="w-4 h-4 text-blue-400" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleTimer}
+            className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
+            title="Start Focus Timer"
+          >
+            <Clock className="w-4 h-4 text-purple-400" />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
